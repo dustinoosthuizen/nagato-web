@@ -1,0 +1,150 @@
+<div>
+
+    <h2>ComparisonDefinitions</h2>
+
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveComparisonDefinitionModal" ng-click="clear()">
+        <span class="glyphicon glyphicon-flash"></span> Create a new ComparisonDefinition
+    </button>
+    <!--<button class="btn btn-primary btn-lg" ng-click="newComparisonDefinition()">-->
+    <!--<span class="glyphicon glyphicon-flash"></span> Create a new ComparisonDefinition NGD-->
+    <!--</button>-->
+    <div class="modal" id="saveComparisonDefinitionModal" tabindex="-1" role="dialog" aria-labelledby="myComparisonDefinitionLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="form" role="form" novalidate
+                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+                      ng-submit="save()">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                ng-click="clear()">&times;</button>
+                        <h4 class="modal-title" id="myComparisonDefinitionLabel">Create or edit a ComparisonDefinition</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>ID</label>
+                            <input type="text" class="form-control" name="id"
+                                   ng-model="comparisondefinition.id" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" class="form-control" name="test"
+                                   ng-model="comparisondefinition.name" ng-minlength=1 ng-maxlength=50 required>
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select ng-change="loadConfigType(comparisondefinition.type)"  class="form-control" ng-model="comparisondefinition.type" ng-options="comparisonDefinitionType.name for comparisonDefinitionType in comparisonDefinitionTypes track by comparisonDefinitionType.name"></select>
+                        </div>
+                        <div ng-show="comparisondefinition.type.name=='Database'">
+                            <div class="row">
+                                <div class="col-md-6"><label class="control-label no-padding-right">Source Datasource</label></div>
+                                <div class="col-md-6"><label class=" control-label no-padding-right">Target Datasource</label></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><select ng-change="loadTargetDatasource()"  class="form-control" ng-model="selectedSourceDatasource" ng-options="datasource.name for datasource in datasources track by datasource.name"></select></div>
+                                <div class="col-md-6"><select ng-change="loadSourceDatasource()"  class="form-control" ng-model="selectedTargetDatasource" ng-options="datasource.name for datasource in datasources track by datasource.name"></select></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><label class="control-label no-padding-right">Source Query</label></div>
+                                <div class="col-md-6"><label class=" control-label no-padding-right">Target Query</label></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><textarea class="form-control" rows="20" id="sourceQuery" name="sourceQuery" ng-model="comparisonDefinitionDatabase.sourceQuery"></textarea></div>
+                                <div class="col-md-6"><textarea class="form-control" rows="20" id="targetQuery" name="targetQuery" ng-model="comparisonDefinitionDatabase.targetQuery"></textarea></div>
+                            </div>
+                            <div class="row">
+                                <div ng-switch="sourceCompiled">
+                                    <div ng-switch-when="true">
+                                        <div class="col-md-6"><button type="button" class="btn btn-success" ng-click="compileSourceQuery()">
+                                            <span class="glyphicon glyphicon-refresh"></span> Compile
+                                        </button></div>
+                                    </div>
+                                    <div ng-switch-when="false">
+                                        <div class="col-md-6"><button type="button" class="btn btn-warning" ng-click="compileSourceQuery()">
+                                            <span class="glyphicon glyphicon-refresh"></span> Compile
+                                        </button></div>
+                                    </div>
+                                </div>
+                                <div ng-switch="sourceCompiled">
+                                    <div ng-switch-when="true">
+                                        <div class="col-md-6"><button type="button" class="btn btn-success" ng-click="compileTargetQuery()">
+                                            <span class="glyphicon glyphicon-refresh"></span> Compile
+                                        </button></div>
+                                    </div>
+                                    <div ng-switch-when="false">
+                                        <div class="col-md-6"><button type="button" class="btn btn-warning" ng-click="compileTargetQuery()">
+                                            <span class="glyphicon glyphicon-refresh"></span> Compile
+                                        </button></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6" ng-show="sourceCompiled">
+                                        <label class="control-label no-padding-right">Key to match</label>
+                                        <select class="form-control" ng-model="comparisonDefinitionDatabase.sourceKeytomatch" ng-options="attribute for attribute in sourceCompiledAttributes.attributes track by attribute"></select>
+                                    </div>
+                                    <div class="col-md-6" ng-show="targetCompiled">
+                                        <label class="control-label no-padding-right">Key to match</label>
+                                        <select class="form-control" ng-model="comparisonDefinitionDatabase.targetKeytomatch" ng-options="attribute for attribute in targetCompiledAttributes.attributes track by attribute"></select>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6" ng-show="sourceCompiled">
+                                        <label class="control-label no-padding-right">Attribute to compare</label>
+                                        <select class="form-control" ng-model="comparisonDefinitionDatabase.sourceAttributetocompare" ng-options="attribute for attribute in sourceCompiledAttributes.attributes track by attribute"></select>
+                                    </div>
+                                    <div class="col-md-6" ng-show="targetCompiled">
+                                        <label class="control-label no-padding-right">Attribute to compare</label>
+                                        <select class="form-control" ng-model="comparisonDefinitionDatabase.targetAttributetocompare" ng-options="attribute for attribute in targetCompiledAttributes.attributes track by attribute"></select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                                <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                            </button>
+                            <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-save"></span> Save
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="comparisondefinition in comparisondefinitions">
+                <td>{{comparisondefinition.id}}</td>
+                <td>{{comparisondefinition.name}}</td>
+                <td>{{comparisondefinition.type.name}}</td>
+                <td>
+                    <button type="submit"
+                            ng-click="update(comparisondefinition.id)"
+                            class="btn">
+                        <span class="glyphicon glyphicon-pencil"></span> Edit
+                    </button>
+                    <button type="submit"
+                            ng-click="delete(comparisondefinition.id)"
+                            class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove-circle"></span> Delete
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

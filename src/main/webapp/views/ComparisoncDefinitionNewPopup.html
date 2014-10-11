@@ -1,0 +1,43 @@
+<div class="ngdialog-message">
+    <form name="form" role="form" novalidate
+
+          ng-submit="create()">
+
+        <div class="modal-header">
+            <h4 class="modal-title" id="myComparisonDefinitionLabel">Create or edit a ComparisonDefinition</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>ID</label>
+                <input type="text" class="form-control" name="id"
+                       ng-model="comparisondefinition.id" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" name="test"
+                       ng-model="comparisondefinition.name" ng-minlength=1 ng-maxlength=50 required>
+            </div>
+
+            <div class="form-group">
+                <label>Type</label>
+                <select class="form-control" ng-model="comparisondefinition.type" ng-options="comparisonDefinitionType.name for comparisonDefinitionType in comparisonDefinitionTypes track by comparisonDefinitionType.name">
+                </select>
+
+                <!--<button  type="button" class="btn btn-primary"  data-dismiss="modal" ng-click="newDataSource()">-->
+                    <!--<span class="glyphicon glyphicon-flash"></span>Datasources-->
+                <!--</button>-->
+            </div>
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" ng-click="newComparisonDefinitionClose()">
+                <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+            </button>
+            <button type="button" ng-disabled="form.$invalid" class="btn btn-primary" ng-click="create()">
+                <span class="glyphicon glyphicon-save"></span> Save
+            </button>
+        </div>
+    </form>
+</div>
